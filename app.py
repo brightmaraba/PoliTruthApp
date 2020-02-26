@@ -9,9 +9,9 @@ api = Api(app)
 
 #Define Resource Routing
 
-api.add_resourcees(PoliticianListResource, '/politicians')
-api.add_resourcees(PoliticianResource, '/politician/<int:politician_id>')
-api.add_resourcees(PoliticianPublishResource, '/politicians/<int:politician_id>/publish')
+api.add_resource(PoliticianListResource, '/politicians')
+api.add_resource(PoliticianResource, '/politician/<int:politician_id>')
+api.add_resource(PoliticianPublishResource, '/politicians/<int:politician_id>/publish')
 
 if __name__ =='__main__':
     app.run(port=5000, debug=True)

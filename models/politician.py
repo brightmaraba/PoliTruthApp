@@ -6,14 +6,14 @@ __credits__ = []
 __license__ = "MIT"
 __version__ = "1.0.0"
 __maintainer__ = "Brian Koech"
-__email__ = "librankoech@gmail.com"
+__email__ = "brightkoech@libranconsult.com"
 __status__ = "Prototype"
 
 #Empty list to hold data
 politician_list = []
 
 #Iterate Function
-def get_last__id():
+def get_last_id():
     if politician_list:
         last_politician = politician_list[-1]
     else:
@@ -24,7 +24,7 @@ def get_last__id():
 class Politician:
     def __init__(self, name, gender, age, party, position, county, constituency, ward,
                     bio_data, c_vitae, description, is_published):
-        self.id = get_last__id(),
+        self.id = get_last_id(),
         self.name = name,
         self.gender = gender,
         self.age = age,

@@ -56,7 +56,15 @@ class PoliticianResource(Resource):
             return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND
 
         politician.name = data['name']
+        politician.position = data['position']
         politician.description = data['description']
+        politician.age = data['age']
+        politician.gender = data['gender']
+        politician.bio_data = data['bio_data']
+        politician.c_vitae = data['c_vitae']
+        politician.county = data['county']
+        politician.constituency = data['constituency']
+        politician.ward = data['ward']
 
         return politician.data, HTTPStatus.OK
 

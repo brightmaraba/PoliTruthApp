@@ -21,7 +21,15 @@ class PoliticianListResource(Resource):
         data = request.get_json()
 
         politician = Politician(name=data['name'],
-                                description=data['description']
+                                position=data['position'],
+                                description=data['description'],
+                                age=data['age'],
+                                gender=data['gender'],
+                                bio_data=data['bio_data'],
+                                c_vitae=data['c_vitae'],
+                                county=data['county'],
+                                constituency=data['constituency'],
+                                ward=data['ward']
         )
 
         politician_list.append(politician)

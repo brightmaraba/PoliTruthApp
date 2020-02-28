@@ -29,7 +29,6 @@ class PoliticianListResource(Resource):
             ward=data['ward'],
             bio_data=data['bio_data'],
             c_vitae=data['c_vitae']
-
         )
         politician_list.append(politician)
         return politician.data, HTTPStatus.CREATED
@@ -55,6 +54,15 @@ class PoliticianResource(Resource):
             return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND
 
         politician.name = data['name']
+        politician.position = data['position']
+        politician.description = data['description']
+        politician.gender = data['gender']
+        politician.age = data['age']
+        politician.county = data['county']
+        politician.constituency = data['constituency']
+        politician.ward = data['ward']
+        politician.bio_data = data['bio_data']
+        politician.c_vitae = data['c_vitae']
 
         return politician.data, HTTPStatus.OK
 

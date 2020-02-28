@@ -15,14 +15,14 @@ class Politician:
         self.id = get_last_id()
         self.name = name
         self.position = position
-        self.description
+        self.description = description
         self.gender = gender
         self.age = age
-        self.county
-        self.constituency
-        self.ward
-        self.bio_data
-        self.c_vitae
+        self.county = county
+        self.constituency = constituency
+        self.ward = ward
+        self.bio_data = bio_data
+        self.c_vitae = c_vitae
         self.is_publish = False
 
     @property

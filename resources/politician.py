@@ -37,7 +37,7 @@ class PoliticianListResource(Resource):
 class PoliticianResource(Resource):
     def get(self, politician_id):
         politician = next((politician for politician in politician_list
-                           if politician_id == politician_id and politician.is_publish is True), None)
+                           if politician_id == politician_id and politician.is_publish == True), None)
 
         if politician is None:
             return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND

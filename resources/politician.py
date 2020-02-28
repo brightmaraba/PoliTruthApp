@@ -18,7 +18,12 @@ class PoliticianListResource(Resource):
     def post(self):
         data = request.get_json()
 
-        politician = Politician(name=data['name'])
+        politician = Politician(
+            name=data['name'],
+            position=data['position'],
+            gender=data['gender'],
+            age=data['age']
+        )
         politician_list.append(politician)
         return politician.data, HTTPStatus.CREATED
 

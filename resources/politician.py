@@ -37,7 +37,7 @@ class PoliticianListResource(Resource):
 class PoliticianResource(Resource):
     def get(self, politician_id):
         politician = next((politician for politician in politician_list
-                           if politician_id == politician_id and politician.is_publish == True), None)
+                           if politician_id == politician_id and politician.is_publish is True), None)
 
         if politician is None:
             return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND
@@ -67,22 +67,22 @@ class PoliticianResource(Resource):
         return politician.data, HTTPStatus.OK
 
 class PoliticianPublishResource(Resource):
+
     def put(self, politician_id):
-        politician = next((politician for politician in politician_list
-                           if politician_id == politician_id), None)
+        politician = next((politician for politician in politician_list if politician.id == politician_id), None)
 
         if politician is None:
-            return {'message': 'politician not found'}, HTTPStatus.OK
+            return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND
 
         politician.is_publish = True
 
         return {}, HTTPStatus.NO_CONTENT
 
     def delete(self, politician_id):
-        politician = next((politician for politician in politician_list
-                           if politician_id == politician_id), None)
+        politician = next((politician for politician in politician_list if politician.id == politician_id), None)
+
         if politician is None:
-            return {'message': 'politician is not found'}
+            return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND
 
         politician.is_publish = False
 

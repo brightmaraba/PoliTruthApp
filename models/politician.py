@@ -6,6 +6,7 @@ def get_last_id():
         last_politician = politician_list[-1]
     else:
         return 1
+    
     return last_politician.id + 1
 
 

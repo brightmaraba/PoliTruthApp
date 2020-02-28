@@ -10,12 +10,19 @@ def get_last_id():
 
 
 class Politician:
-    def __init__(self, name, position, gender, age):
+    def __init__(self, name, position, description, gender, age, county,
+                    constituency, ward, bio_data, c_vitae):
         self.id = get_last_id()
         self.name = name
         self.position = position
+        self.description
         self.gender = gender
         self.age = age
+        self.county
+        self.constituency
+        self.ward
+        self.bio_data
+        self.c_vitae
         self.is_publish = False
 
     @property
@@ -24,6 +31,12 @@ class Politician:
             'id': self.id,
             'name': self.name,
             'position': self.position,
+            'description': self.description,
             'gender': self.gender,
-            'age': self.age
+            'age': self.age,
+            'county': self.county,
+            'constituency': self.constituency,
+            'ward': self.ward,
+            'bio_data': self.bio_data,
+            'c_vitae': self.c_vitae
         }

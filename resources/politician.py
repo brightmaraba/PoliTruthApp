@@ -21,8 +21,15 @@ class PoliticianListResource(Resource):
         politician = Politician(
             name=data['name'],
             position=data['position'],
+            description=data['description'],
             gender=data['gender'],
-            age=data['age']
+            age=data['age'],
+            county=data['county'],
+            constituency=data['constituency'],
+            ward=data['ward'],
+            bio_data=data['bio_data'],
+            c_vitae=data['c_vitae']
+
         )
         politician_list.append(politician)
         return politician.data, HTTPStatus.CREATED

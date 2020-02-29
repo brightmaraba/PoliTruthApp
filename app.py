@@ -34,4 +34,5 @@ def set_context(app):
     app.app_context().push()
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app = create_app()
+    app.run()

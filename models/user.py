@@ -12,7 +12,7 @@ class User(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
 
-    recipes = db.relationship('Recipe', backref='user')
+    politicians = db.relationship('Politician', backref='user')
 
     @classmethod
     def get_by_email(cls, email):

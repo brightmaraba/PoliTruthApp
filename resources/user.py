@@ -24,6 +24,7 @@ class UserListResource(Resource):
         user = User(
             username=username,
             email=email,
+            bio=bio,
             password=password
         )
 

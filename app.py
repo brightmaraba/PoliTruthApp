@@ -4,7 +4,7 @@ from flask_restful import Api
 
 from config import Config
 from extensions import db
-from resources.user import UserListResource
+from resources.user import UserListResource, UserResource
 
 from resources.politician import PoliticianListResource, PoliticianResource, PoliticianPublishResource
 

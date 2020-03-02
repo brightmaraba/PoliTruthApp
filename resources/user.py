@@ -5,17 +5,18 @@ from http import HTTPStatus
 from utils import hash_password
 from models.user import User
 
+
 class UserListResource(Resource):
     def post(self):
         json_data = request.get_json()
 
         username = json_data.get('username')
         email = json_data.get('email')
-        bio = json_data.get('bio')
         non_hash_password = json_data.get('password')
 
         if User.get_by_username(username):
             return {'message': 'username already used'}, HTTPStatus.BAD_REQUEST
+
         if User.get_by_email(email):
             return {'message': 'email already used'}, HTTPStatus.BAD_REQUEST
 
@@ -24,7 +25,6 @@ class UserListResource(Resource):
         user = User(
             username=username,
             email=email,
-            bio=bio,
             password=password
         )
 
@@ -33,8 +33,7 @@ class UserListResource(Resource):
         data = {
             'id': user.id,
             'username': user.username,
-            'email':user.email,
-            'bio': user.bio
+            'email': user.email
         }
 
         return data, HTTPStatus.CREATED

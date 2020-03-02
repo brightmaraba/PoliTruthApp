@@ -4,7 +4,7 @@ from flask_restful import Api
 
 from config import Config
 from extensions import db
-from resources.user import UserListResource, UserResource
+from resources.user import UserListResource
 
 from resources.politician import PoliticianListResource, PoliticianResource, PoliticianPublishResource
 
@@ -25,10 +25,11 @@ def register_extensions(app):
 def register_resources(app):
     api = Api(app)
 
+    api.add_resource(UserListResource,'/users')
     api.add_resource(PoliticianListResource, '/politicians')
     api.add_resource(PoliticianResource, '/politicians/<int:politician_id>')
     api.add_resource(PoliticianPublishResource, '/politicians/<int:politician_id>/publish')
-    api.add_resource(UserListResource,'/users')
+
 
 def set_context(app):
     app.app_context().push()

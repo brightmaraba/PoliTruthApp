@@ -28,5 +28,5 @@ class Politician(db.Model):
     is_publish = db.Column(db.Boolean(), default=False)
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
-    
+
     user_id = db.Column(db.Integer(), db.ForeignKey("user.id"))

@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_optional, get_jwt_identity, jwt_required
 
 from utils import check_password
 from models.user import User
@@ -19,3 +19,6 @@ class TokenResource(Resource):
             return {'message': 'email or password incorrect'}, HTTPStatus.UNAUTHORIZED
         access_token = create_access_token(identity=user.id)
         return {'access_token': access_token}, HTTPStatus.OK
+
+
+

@@ -3,10 +3,12 @@ from flask_migrate import Migrate
 from flask_restful import Api
 
 from config import Config
-from extensions import db
-from resources.user import UserListResource
+from extensions import db, jwt
 
+from resources.user import UserResource, UserListResource
 from resources.politician import PoliticianListResource, PoliticianResource, PoliticianPublishResource
+from resources.token import  TokenResource
+
 
 def create_app():
     app = Flask(__name__)
@@ -16,23 +18,29 @@ def create_app():
     register_resources(app)
     set_context(app)
 
-    return(app)
+    return app
+
 
 def register_extensions(app):
     db.init_app(app)
     migrate = Migrate(app, db)
+    jwt.init_app(app)
+
 
 def register_resources(app):
     api = Api(app)
 
-    api.add_resource(UserListResource,'/users')
+    api.add_resource(UserListResource, '/users')
+    api.add_resource(UserResource, '/users/<string:username>')
     api.add_resource(PoliticianListResource, '/politicians')
     api.add_resource(PoliticianResource, '/politicians/<int:politician_id>')
     api.add_resource(PoliticianPublishResource, '/politicians/<int:politician_id>/publish')
+    api.add_resource(TokenResource, '/token')
 
 
 def set_context(app):
     app.app_context().push()
+
 
 if __name__ == '__main__':
     app = create_app()

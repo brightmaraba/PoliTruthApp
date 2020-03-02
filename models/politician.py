@@ -12,7 +12,7 @@ def get_last_id():
 
 
 class Politician(db.Model):
-    __tablename__ = 'politicians'
+    __tablename__ = 'politician'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)

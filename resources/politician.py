@@ -10,6 +10,9 @@ class PoliticianListResource(Resource):
 
     def get(self):
         politicians = Politician.get_all_published()
+#Test if it works
+        if politicians is None:
+            return {'message': 'No politicians found'}, HTTPStatus.NOT_FOUND
 
         data = []
 

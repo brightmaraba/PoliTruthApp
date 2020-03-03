@@ -2,80 +2,101 @@ from flask import request
 from flask_restful import Resource
 from http import HTTPStatus
 
-from models.politician import Politician, politician_list
+from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
+from models.politician import Politician
 
 
 class PoliticianListResource(Resource):
 
     def get(self):
+        politicians = Politician.get_all_published()
 
         data = []
 
-        for politician in politician_list:
-            if politician.is_publish is True:
-                data.append(politician.data)
+        for politician in politicians:
+            data.append(politician.data())
 
         return {'data': data}, HTTPStatus.OK
 
+    @jwt_required
     def post(self):
-        data = request.get_json()
 
-        politician = Politician(name=data['name'],
-                                position=data['position'],
-                                description=data['description'],
-                                age=data['age'],
-                                gender=data['gender'],
-                                bio_data=data['bio_data'],
-                                c_vitae=data['c_vitae'],
-                                county=data['county'],
-                                constituency=data['constituency'],
-                                ward=data['ward']
-        )
+        json_data = request.get_json()
+        current_user = get_jwt_identity()
+        politician = Politician(name = json_data['name'],
+                                position = json_data['position'],
+                                description = json_data['description'],
+                                age = json_data['age'],
+                                gender = json_data['gender'],
+                                bio_data = json_data['bio_data'],
+                                c_vitae = json_data['c_vitae'],
+                                county = json_data['county'],
+                                constituency = json_data['constituency'],
+                                ward = json_data['ward'],
+                                user_id = current_user)
 
-        politician_list.append(politician)
+        politician.save()
 
-        return politician.data, HTTPStatus.CREATED
+        return politician.data(), HTTPStatus.CREATED
 
 
 class PoliticianResource(Resource):
-
+    @jwt_optional
     def get(self, politician_id):
-        politician = next((politician for politician in politician_list if politician.id == politician_id and politician.is_publish == True), None)
+        politician = Politician.get_by_id(politician_id=politician_id)
 
         if politician is None:
             return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND
 
-        return politician.data, HTTPStatus.OK
+        current_user = get_jwt_identity()
 
+        if politician.is_publish == False and politician.user_id !=current_user:
+            return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
+
+        return politician.data(), HTTPStatus.OK
+
+    @jwt_required
     def put(self, politician_id):
-        data = request.get_json()
+        json_data = request.get_json()
 
-        politician = next((politician for politician in politician_list if politician.id == politician_id), None)
+        politician = Politician.get_by_id(politician_id=politician_id)
 
         if politician is None:
             return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND
 
-        politician.name = data['name']
-        politician.position = data['position']
-        politician.description = data['description']
-        politician.age = data['age']
-        politician.gender = data['gender']
-        politician.bio_data = data['bio_data']
-        politician.c_vitae = data['c_vitae']
-        politician.county = data['county']
-        politician.constituency = data['constituency']
-        politician.ward = data['ward']
+        current_user = get_jwt_identity()
 
-        return politician.data, HTTPStatus.OK
+        if current_user != politician.user_id:
+            return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
+        politician.name = json_data['name']
+        politician.position = json_data['position']
+        politician.description = json_data['description']
+        politician.age = json_data['age']
+        politician.gender = json_data['gender']
+        politician.bio_data = json_data['bio_data']
+        politician.c_vitae = json_data['c_vitae']
+        politician.county = json_data['county']
+        politician.constituency = json_data['constituency']
+        politician.ward = json_data['ward']
+
+        politician.save()
+
+        return politician.data(), HTTPStatus.OK
+
+    @jwt_required
     def delete(self, politician_id):
 
-        politician = next((politician for politician in politician_list if politician.id == politician_id), None)
+        politician = Politician.get_by_id(politician_id=politician_id)
 
         if politician is None:
             return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND
 
-        politician_list.remove(politician)
+        current_user = get_jwt_identity()
+        if current_user != politician.user_id:
+            return {'message': "Access is not allowed"}, HTTPStatus.FORBIDDEN
+
+        politician.delete()
 
         return {}, HTTPStatus.NO_CONTENT
 

@@ -1,16 +1,4 @@
 from extensions import db
-
-politician_list = []
-
-
-def get_last_id():
-    if politician_list:
-        last_politician = politician_list[-1]
-    else:
-        return 1
-    return last_politician.id + 1
-
-
 class Politician(db.Model):
     __tablename__ = 'politician'
 
@@ -29,3 +17,35 @@ class Politician(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
     user_id = db.Column(db.Integer(), db.ForeignKey("user.id"))
+
+    def data(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'position': self.position,
+            'description': self.description,
+            'age': self.age,
+            'gender': self.gender,
+            'bio_data': self.bio_data,
+            'c_vitae': self.c_vitae,
+            'county': self.county,
+            'constituency': self.constituency,
+            'ward': self.ward,
+            'user_id': self.user_id
+        }
+
+    @classmethod
+    def get_all_published(cls):
+        cls.query.filter_by(is_publish=True).all()
+
+    @classmethod
+    def get_by_id(cls, politician_id):
+        return cls.query.filter_by(id=politician_id).first()
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()

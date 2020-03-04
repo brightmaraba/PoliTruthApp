@@ -105,23 +105,35 @@ class PoliticianResource(Resource):
 
 
 class PoliticianPublishResource(Resource):
-
+    @jwt_required
     def put(self, politician_id):
-        politician = next((politician for politician in politician_list if politician.id == politician_id), None)
+        politician = Politician.get_by_id(politician_id=politician_id)
 
         if politician is None:
-            return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND
+            return {'message': 'Politician not found'}, HTTPStatus.NOT_EXTENDED
+
+        current_user = get_jwt_identity()
+
+        if current_user != politician.user_id:
+            return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
         politician.is_publish = True
+        politician.save()
 
         return {}, HTTPStatus.NO_CONTENT
 
+    @jwt_required
     def delete(self, politician_id):
-        politician = next((politician for politician in politician_list if politician.id == politician_id), None)
+        politician = Politician.get_by_id(politician_id=politician_id)
 
         if politician is None:
-            return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND
+            return {'message': 'Politician not found'}, HTTPStatus.NOT_FOUND
+
+        current_user = get_jwt_identity()
+        if current_user != politician.user_id:
+            return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
         politician.is_publish = False
+        politician.save()
 
         return {}, HTTPStatus.NO_CONTENT

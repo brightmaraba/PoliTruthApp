@@ -1,9 +1,0 @@
-{
-    "python.pythonPath": "venv3/bin/python",
-    "cSpell.words": [
-        "onupdate",
-        "psycopg",
-        "ptadb",
-        "ptadbadmin"
-    ]
-}

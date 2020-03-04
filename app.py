@@ -8,7 +8,7 @@ from extensions import db, jwt
 
 from resources.user import UserListResource, UserResource, MeResource
 from resources.token import TokenResource, RefreshResource, RevokeResource, black_list
-from resources.politician import PoliticianListResource, Politician Resource, PoliticianPublishResource
+from resources.politician import PoliticianListResource, PoliticianResource, PoliticianPublishResource
 
 
 def create_app():

@@ -1,5 +1,6 @@
 from extensions import db
 
+
 class User(db.Model):
     __tablename__ = 'user'
 
@@ -22,7 +23,7 @@ class User(db.Model):
         return cls.query.filter_by(email=email).first()
 
     @classmethod
-    def get_user_by_id(cls, id):
+    def get_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
 
     def save(self):

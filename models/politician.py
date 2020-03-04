@@ -1,4 +1,5 @@
 from extensions import db
+
 class Politician(db.Model):
     __tablename__ = 'politician'
 
@@ -36,7 +37,7 @@ class Politician(db.Model):
 
     @classmethod
     def get_all_published(cls):
-        cls.query.filter_by(is_publish=True).all()
+        return cls.query.filter_by(is_publish=True).all()
 
     @classmethod
     def get_by_id(cls, politician_id):

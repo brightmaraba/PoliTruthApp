@@ -5,9 +5,10 @@ from flask_restful import Api
 from config import Config
 from extensions import db, jwt
 
-from resources.user import UserResource, UserListResource, MeResource
-from resources.politician import PoliticianListResource, PoliticianResource, PoliticianPublishResource
-from resources.token import  TokenResource, RefreshResource, RevokeResource, black_list
+
+from resources.user import UserListResource, UserResource, MeResource
+from resources.token import TokenResource, RefreshResource, RevokeResource, black_list
+from resources.politician import PoliticianListResource, Politician Resource, PoliticianPublishResource
 
 
 def create_app():
@@ -16,7 +17,6 @@ def create_app():
 
     register_extensions(app)
     register_resources(app)
-    set_context(app)
 
     return app
 
@@ -40,17 +40,13 @@ def register_resources(app):
     api.add_resource(UserResource, '/users/<string:username>')
     api.add_resource(MeResource, '/me')
 
-    api.add_resource(PoliticianListResource, '/politicians')
-    api.add_resource(PoliticianResource, '/politicians/<int:politician_id>')
-    api.add_resource(PoliticianPublishResource, '/politicians/<int:politician_id>/publish')
-
     api.add_resource(TokenResource, '/token')
     api.add_resource(RefreshResource, '/refresh')
     api.add_resource(RevokeResource, '/revoke')
 
-
-def set_context(app):
-    app.app_context().push()
+    api.add_resource(PoliticianListResource, '/politicians')
+    api.add_resource(PoliticianResource, '/politicians/<int:politician_id>')
+    api.add_resource(PoliticianPublishResource, '/politicians/<int:politician_id>/publish')
 
 
 if __name__ == '__main__':

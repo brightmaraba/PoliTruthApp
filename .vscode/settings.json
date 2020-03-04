@@ -1,3 +1,8 @@
 {
-    "python.pythonPath": "venv3/bin/python3"
+    "python.pythonPath": "venv3/bin/python3",
+    "cSpell.words": [
+        "psycopg",
+        "ptadb",
+        "ptadbadmin"
+    ]
 }

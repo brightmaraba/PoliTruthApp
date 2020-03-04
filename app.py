@@ -7,7 +7,7 @@ from extensions import db, jwt
 
 from resources.user import UserResource, UserListResource, MeResource
 from resources.politician import PoliticianListResource, PoliticianResource, PoliticianPublishResource
-from resources.token import  TokenResource
+from resources.token import  TokenResource, RefreshResource
 
 
 def create_app():
@@ -37,6 +37,7 @@ def register_resources(app):
     api.add_resource(PoliticianResource, '/politicians/<int:politician_id>')
     api.add_resource(PoliticianPublishResource, '/politicians/<int:politician_id>/publish')
     api.add_resource(TokenResource, '/token')
+    api.add_resource(RefreshResource, '/refresh')
 
 
 def set_context(app):

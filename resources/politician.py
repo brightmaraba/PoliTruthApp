@@ -1,9 +1,14 @@
 from flask import request
 from flask_restful import Resource
+from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
 from http import HTTPStatus
 
-from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
+
 from models.politician import Politician
+from schemas.politician import PoliticianSchema
+
+poltician_schema = PoliticianSchema()
+politician_list_schema = PoliticianSchema(many=True)
 
 
 class PoliticianListResource(Resource):
@@ -12,15 +17,7 @@ class PoliticianListResource(Resource):
 
         politicians = Politician.get_all_published()
 
-        if politicians is None:
-            return {'message': 'Politician not found'}
-
-        data = []
-
-        for politician in politicians:
-                data.append(politician.data())
-
-        return {'data': data}, HTTPStatus.OK
+        return politician_list_schema.dump(politicians).data, HTTPStatus.OK
 
     @jwt_required
     def post(self):
@@ -28,21 +25,16 @@ class PoliticianListResource(Resource):
 
         current_user = get_jwt_identity()
 
-        politician = Politician(name = json_data['name'],
-                                position = json_data['position'],
-                                description = json_data['description'],
-                                age = json_data['age'],
-                                gender = json_data['gender'],
-                                bio_data = json_data['bio_data'],
-                                c_vitae = json_data['c_vitae'],
-                                county = json_data['county'],
-                                constituency = json_data['constituency'],
-                                ward = json_data['ward'],
-                                user_id = current_user)
+        data, errors = poltician_schema.load(data=json_data)
 
+        if errors:
+            return {'message': 'Validation errors', 'errors': errors}, HTTPStatus.BAD_REQUEST
+
+        politician = Politician(**data)
+        politician.user_id = current_user
         politician.save()
 
-        return politician.data(), HTTPStatus.CREATED
+        return poltician_schema.dump(politician).data, HTTPStatus.CREATED
 
 
 class PoliticianResource(Resource):

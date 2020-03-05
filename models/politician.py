@@ -18,7 +18,23 @@ class Politician(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
     user_id = db.Column(db.Integer(), db.ForeignKey("user.id"))
-   
+
+    def data(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'position': self.position,
+            'description': self.description,
+            'age': self.age,
+            'gender': self.gender,
+            'bio_data': self.bio_data,
+            'c_vitae': self.c_vitae,
+            'county': self.county,
+            'constituency': self.constituency,
+            'ward': self.ward,
+            'user_id': self.user_id
+        }
+
     @classmethod
     def get_all_published(cls):
         return cls.query.filter_by(is_publish=True).all()

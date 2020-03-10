@@ -17,16 +17,12 @@ class UserListResource(Resource):
 
         json_data = request.get_json()
 
+        current_user = get_jwt_identity()
+
         data, errors = user_schema.load(data=json_data)
 
         if errors:
             return {'message': 'Validation errors', 'errors': errors}, HTTPStatus.BAD_REQUEST
-
-        if User.get_by_username(data.get('username')):
-            return {'message': 'username already used'}, HTTPStatus.BAD_REQUEST
-
-        if User.get_by_email(data.get('email')):
-            return {'message': 'email already used'}, HTTPStatus.BAD_REQUEST
 
         user = User(**data)
         user.save()

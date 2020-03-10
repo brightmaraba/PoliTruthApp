@@ -3,11 +3,10 @@ from flask_restful import Resource
 from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
 from http import HTTPStatus
 
-
 from models.politician import Politician
 from schemas.politician import PoliticianSchema
 
-poltician_schema = PoliticianSchema()
+politician_schema = PoliticianSchema()
 politician_list_schema = PoliticianSchema(many=True)
 
 
@@ -21,11 +20,12 @@ class PoliticianListResource(Resource):
 
     @jwt_required
     def post(self):
+
         json_data = request.get_json()
 
         current_user = get_jwt_identity()
 
-        data, errors = poltician_schema.load(data=json_data)
+        data, errors = politician_schema.load(data=json_data)
 
         if errors:
             return {'message': 'Validation errors', 'errors': errors}, HTTPStatus.BAD_REQUEST
@@ -34,7 +34,7 @@ class PoliticianListResource(Resource):
         politician.user_id = current_user
         politician.save()
 
-        return poltician_schema.dump(politician).data, HTTPStatus.CREATED
+        return politician_schema.dump(politician).data, HTTPStatus.CREATED
 
 
 class PoliticianResource(Resource):
@@ -52,15 +52,22 @@ class PoliticianResource(Resource):
         if politician.is_publish == False and politician.user_id != current_user:
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
-        return politician.data(), HTTPStatus.OK
+        return politician_schema.dump(politician).data, HTTPStatus.OK
+
     @jwt_required
-    def put(self, politician_id):
+    def patch(self, politician_id):
+
         json_data = request.get_json()
+
+        data, errors = politician_schema.load(data=json_data, partial=('name',))
+
+        if errors:
+            return {'message': 'Validation errors', 'errors': errors}, HTTPStatus.BAD_REQUEST
 
         politician = Politician.get_by_id(politician_id=politician_id)
 
         if politician is None:
-            return {'message': 'Politician not found'}, HTTPStatus.NOT_FOUND
+            return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND
 
         current_user = get_jwt_identity()
 
@@ -80,10 +87,11 @@ class PoliticianResource(Resource):
 
         politician.save()
 
-        return politician.data(), HTTPStatus.OK
+        return politician_schema.dump(politician).data, HTTPStatus.OK
 
     @jwt_required
     def delete(self, politician_id):
+
         politician = Politician.get_by_id(politician_id=politician_id)
 
         if politician is None:
@@ -95,6 +103,7 @@ class PoliticianResource(Resource):
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
         politician.delete()
+
         return {}, HTTPStatus.NO_CONTENT
 
 
@@ -114,7 +123,6 @@ class PoliticianPublishResource(Resource):
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
         politician.is_publish = True
-
         politician.save()
 
         return {}, HTTPStatus.NO_CONTENT
@@ -125,12 +133,12 @@ class PoliticianPublishResource(Resource):
         politician = Politician.get_by_id(politician_id=politician_id)
 
         if politician is None:
-            return {'message': 'Politician not found'}, HTTPStatus.NOT_FOUND
+            return {'message': 'politician not found'}, HTTPStatus.NOT_FOUND
 
         current_user = get_jwt_identity()
 
         if current_user != politician.user_id:
-            return {'message': 'Access is not allowed'}
+            return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
         politician.is_publish = False
         politician.save()

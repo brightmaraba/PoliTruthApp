@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, post_dump
 
 from utils import hash_password
 
@@ -17,6 +17,4 @@ class UserSchema(Schema):
 
     def load_password(self, value):
         return hash_password(value)
-
-
 

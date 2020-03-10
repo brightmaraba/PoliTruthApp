@@ -22,7 +22,6 @@ def create_app():
 
 
 def register_extensions(app):
-    db.app = app
     db.init_app(app)
     migrate = Migrate(app, db)
     jwt.init_app(app)
@@ -38,6 +37,7 @@ def register_resources(app):
 
     api.add_resource(UserListResource, '/users')
     api.add_resource(UserResource, '/users/<string:username>')
+
     api.add_resource(MeResource, '/me')
 
     api.add_resource(TokenResource, '/token')

@@ -36,7 +36,6 @@ class PoliticianListResource(Resource):
 
         return politician_schema.dump(politician).data, HTTPStatus.CREATED
 
-
 class PoliticianResource(Resource):
 
     @jwt_optional
@@ -59,7 +58,7 @@ class PoliticianResource(Resource):
 
         json_data = request.get_json()
 
-        data, errors = politician_schema.load(data=json_data, partial=('name',))
+        data, errors = politician_schema.load(data=json_data, partial=True)
 
         if errors:
             return {'message': 'Validation errors', 'errors': errors}, HTTPStatus.BAD_REQUEST
@@ -74,16 +73,16 @@ class PoliticianResource(Resource):
         if current_user != politician.user_id:
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
-        politician.name = json_data['name']
-        politician.position = json_data['position']
-        politician.description = json_data['description']
-        politician.age = json_data['age']
-        politician.gender = json_data['gender']
-        politician.bio_data = json_data['bio_data']
-        politician.c_vitae = json_data['c_vitae']
-        politician.county = json_data['county']
-        politician.constituency = json_data['constituency']
-        politician.ward = json_data['ward']
+        politician.name = data.get('name') or politician.name
+        politician.position = data.get('position') or politician.position
+        politician.description = data.get('description') or politician.description
+        politician.age = data.get('age') or politician.age
+        politician.gender = data.get('gender') or politician.gender
+        politician.bio_data = data.get('bio_data') or politician.bio_data
+        politician.c_vitae = data.get('c_vitae') or politician.c_vitae
+        politician.county = data.get('county') or politician.county
+        politician.constituency = data.get('constituency') or politician.constituency
+        politician.ward = data.get('ward') or politician.ward
 
         politician.save()
 

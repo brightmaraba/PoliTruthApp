@@ -30,6 +30,15 @@ class Politician(db.Model):
     def get_by_id(cls, politician_id):
         return cls.query.filter_by(id=politician_id).first()
 
+    @classmethod
+    def get_all_by_user(cls, user_id, visibilty='public'):
+        if visibilty == 'public':
+            return cls.query.filter_by(user_id=user_id, is_publish=True).all()
+        elif visibilty == 'private':
+            return cls.query.filter_by(user_id=user_id, is_publish=False).all()
+        else:
+            return cls.query.filter_by(user_id=user_id).all()
+
     def save(self):
         db.session.add(self)
         db.session.commit()

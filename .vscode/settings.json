@@ -3,6 +3,7 @@
     "cSpell.words": [
         "psycopg",
         "ptadb",
-        "ptadbadmin"
+        "ptadbadmin",
+        "webargs"
     ]
 }

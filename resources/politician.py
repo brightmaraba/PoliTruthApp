@@ -6,6 +6,9 @@ from http import HTTPStatus
 from models.politician import Politician
 from schemas.politician import PoliticianSchema
 
+from webargs import fields
+from webargs.flaskparser import use_kwargs
+
 politician_schema = PoliticianSchema()
 politician_list_schema = PoliticianSchema(many=True)
 
@@ -143,3 +146,9 @@ class PoliticianPublishResource(Resource):
         politician.save()
 
         return {}, HTTPStatus.NO_CONTENT
+
+class UserPoliticianClass(Resource):
+    @jwt_optional
+    @use_kwargs({'visibility': fields.Str(missing='public')})
+    def get(self, username, visibility):
+        

@@ -1,4 +1,4 @@
-#!/home/brightkoech/Projects/edube/venv3/bin/python3
+#!/home/brightkoech/Projects/PoliTruthApp/venv3/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -6,7 +6,7 @@ from config import Config
 from extensions import db, jwt
 
 
-from resources.user import UserListResource, UserResource, MeResource, UserPoliticianListResource
+from resources.user import UserListResource, UserResource, MeResource, UserPoliticianListResource, UserActivateResource
 from resources.token import TokenResource, RefreshResource, RevokeResource, black_list
 from resources.politician import PoliticianListResource, PoliticianResource, PoliticianPublishResource
 
@@ -38,6 +38,7 @@ def register_resources(app):
     api.add_resource(UserListResource, '/users')
     api.add_resource(UserResource, '/users/<string:username>')
     api.add_resource(UserPoliticianListResource, '/users/<string:username>/politicians')
+    api.add_resource(UserActivateResource, '/users/activate/<string:token>')
 
     api.add_resource(MeResource, '/me')
 

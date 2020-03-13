@@ -1,5 +1,5 @@
 import os
-from flask import request, url_for
+from flask import request, url_for, render_template
 from flask_restful import Resource
 from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required
 from http import HTTPStatus
@@ -41,9 +41,9 @@ class UserListResource(Resource):
         token = generate_token(user.email, salt='activate')
         subject = 'Please Confirm Your Registration.'
         link = url_for('useractivateresource', token=token, _external=True)
-        text = 'Hi, Thanks for registering! Please confirm your registration by  clicking on the link: {}'.format(link)
         mailgun.send_email(to=user.email,
-                            subject=subject, text=text)
+                            subject=subject,
+                            html=render_template('email/confirmation.html', link=link))
 
         return user_schema.dump(user).data, HTTPStatus.CREATED
 

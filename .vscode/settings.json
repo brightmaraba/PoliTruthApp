@@ -2,6 +2,7 @@
     "python.pythonPath": "venv3/bin/python",
     "cSpell.words": [
         "a",
+        "app",
         "b",
         "c",
         "cee",
@@ -9,11 +10,13 @@
         "df",
         "efe",
         "pbkdf",
+        "poli",
         "psycopg",
         "ptadb",
         "ptadbadmin",
         "sandboxca",
         "sha",
+        "truth",
         "webargs"
     ]
 }

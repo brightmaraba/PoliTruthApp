@@ -7,7 +7,7 @@ class MailGunApi:
         self.key = api_key
         self.base_url = self.API_URL.format(self.domain)
 
-    def send_email(self, to, subject, text, html=None):
+    def send_email(self, to, subject, html=None):
         if not isinstance(to, (list, tuple)):
             to = [to, ]
 
@@ -15,7 +15,6 @@ class MailGunApi:
             'from': 'PoliTruthApp <no-reply@{}>'.format(self.domain),
             'to': to,
             'subject': subject,
-            'text': text,
             'html': html
         }
 

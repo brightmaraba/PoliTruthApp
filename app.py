@@ -9,7 +9,7 @@ from flask_uploads import configure_uploads, patch_request_class
 
 from resources.user import UserListResource, UserResource, MeResource, UserPoliticianListResource, UserActivateResource, UserAvatarUploadResource
 from resources.token import TokenResource, RefreshResource, RevokeResource, black_list
-from resources.politician import PoliticianListResource, PoliticianResource, PoliticianPublishResource
+from resources.politician import PoliticianListResource, PoliticianResource, PoliticianPublishResource, PoliticianCoverUploadResource
 
 
 def create_app():
@@ -54,6 +54,7 @@ def register_resources(app):
     api.add_resource(PoliticianListResource, '/politicians')
     api.add_resource(PoliticianResource, '/politicians/<int:politician_id>')
     api.add_resource(PoliticianPublishResource, '/politicians/<int:politician_id>/publish')
+    api.add_resource(PoliticianCoverUploadResource, '/politicians/<int:politician_id>/cover')
 
 
 if __name__ == '__main__':

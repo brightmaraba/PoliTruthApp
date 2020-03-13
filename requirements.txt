@@ -12,3 +12,4 @@ mailgun
 itsdangerous
 Flask-Uploads
 werkzeug==0.16.0
+Pillow==6.2.1

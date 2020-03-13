@@ -15,6 +15,7 @@ class Politician(db.Model):
     county = db.Column(db.String(100), nullable=False)
     constituency =  db.Column(db.String(100), nullable=False)
     ward = db.Column(db.String(100), nullable=False)
+    cover_image = db.Column(db.String(100), default=None)
     is_publish = db.Column(db.Boolean(), default=False)
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())

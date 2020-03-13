@@ -1,3 +1,6 @@
+import os
+from extensions import image_set
+from utils import save_image
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
@@ -8,6 +11,7 @@ from schemas.politician import PoliticianSchema
 
 politician_schema = PoliticianSchema()
 politician_list_schema = PoliticianSchema(many=True)
+politician_cover_schema = PoliticianSchema(only=('cover_image', ))
 
 
 class PoliticianListResource(Resource):
@@ -143,3 +147,38 @@ class PoliticianPublishResource(Resource):
         politician.save()
 
         return {}, HTTPStatus.NO_CONTENT
+
+class PoliticianCoverUploadResource(Resource):
+
+    @jwt_required
+    def put(self, politician_id):
+
+        file = request.files.get('cover')
+
+        if not file:
+            return {'message': 'Not a valid image'}, HTTPStatus.BAD_REQUEST
+
+        if not image_set.file_allowed(file, file.filename):
+            return {'message': 'File type not allowed'}, HTTPStatus.BAD_REQUEST
+
+        politician = Politician.get_by_id(politician_id=politician_id)
+
+        if politician is None:
+            return {'message': 'Politician not found'}, HTTPStatus.NOT_FOUND
+
+        current_user = get_jwt_identity()
+
+        if current_user != politician.user_id:
+            return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
+
+        if politician.cover_image:
+            cover_path = image_set.path(folder='politicians', filename=politician.cover_image)
+            if os.path.exists(cover_path):
+                os.remove(cover_path)
+
+        filename = save_image(image=file, folder='politicians')
+
+        politician.cover_image = filename
+        politician.save()
+
+        return politician_cover_schema.dump(politician).data, HTTPStatus.OK

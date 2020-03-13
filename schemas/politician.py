@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields, post_dump, validate, validates, ValidationError
-
+from flask import url_for
 from schemas.user import UserSchema
 
 
@@ -25,12 +25,20 @@ class PoliticianSchema(Schema):
     county = fields.String(required=True, validate=[validate.Length(max=100)])
     constituency =  fields.String(required=True, validate=[validate.Length(max=100)])
     ward = fields.String(required=True, validate=[validate.Length(max=100)])
+    cover_image = fields.String(serialize='dump_cover_url')
     is_publish = fields.Boolean(dump_only=True)
 
     author = fields.Nested(UserSchema, attribute='user', dump_only=True, exclude=('email', ))
 
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
+
+    def dump_cover_url(self, politician):
+        if politician.cover_image:
+            return url_for('static', filename='images/politicians/{}'.format(politician.cover_image), _external=True)
+        else:
+            return url_for('static', filename='images/assets/default-politician-cover.jpg', _external=True)
+
 
     @post_dump(pass_many=True)
     def wrap(self, data, many, **kwargs):

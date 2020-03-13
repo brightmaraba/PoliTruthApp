@@ -31,10 +31,10 @@ class Politician(db.Model):
         return cls.query.filter_by(id=politician_id).first()
 
     @classmethod
-    def get_all_by_user(cls, user_id, visibilty='public'):
-        if visibilty == 'public':
+    def get_all_by_user(cls, user_id, visibility='public'):
+        if visibility == 'public':
             return cls.query.filter_by(user_id=user_id, is_publish=True).all()
-        elif visibilty == 'private':
+        elif visibility == 'private':
             return cls.query.filter_by(user_id=user_id, is_publish=False).all()
         else:
             return cls.query.filter_by(user_id=user_id).all()

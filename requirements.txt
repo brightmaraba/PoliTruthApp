@@ -10,3 +10,5 @@ marshmallow==2.19.5
 webargs==5.4.0
 mailgun
 itsdangerous
+Flask-Uploads
+werkzeug==0.16.0

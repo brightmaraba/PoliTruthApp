@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields, post_dump, validate, validates, ValidationError
 from flask import url_for
 from schemas.user import UserSchema
+from schemas.pagination import PaginationSchema
 
 
 def validate_age(n):
@@ -39,9 +40,5 @@ class PoliticianSchema(Schema):
         else:
             return url_for('static', filename='images/assets/default-politician-cover.jpg', _external=True)
 
-
-    @post_dump(pass_many=True)
-    def wrap(self, data, many, **kwargs):
-        if many:
-            return {'data': data}
-        return data
+class PoliticianPaginationSchema(PaginationSchema):
+    data = fields.Nested(PoliticianSchema, attribute='items', many=True)

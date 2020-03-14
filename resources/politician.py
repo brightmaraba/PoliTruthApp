@@ -5,22 +5,27 @@ from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
 from http import HTTPStatus
+from webargs import fields
+from webargs.flaskparser import use_kwargs
 
 from models.politician import Politician
-from schemas.politician import PoliticianSchema
+from schemas.politician import PoliticianSchema, PoliticianPaginationSchema
 
 politician_schema = PoliticianSchema()
 politician_list_schema = PoliticianSchema(many=True)
 politician_cover_schema = PoliticianSchema(only=('cover_image', ))
+politician_pagination_schema = PoliticianPaginationSchema()
 
 
 class PoliticianListResource(Resource):
+    @use_kwargs({'page': fields.Int(missing=1),
+                    'per_page': fields.Int(missing=20)})
 
-    def get(self):
+    def get(self, page, per_page):
 
-        politicians = Politician.get_all_published()
+        paginated_politicians = Politician.get_all_published(page, per_page)
 
-        return politician_list_schema.dump(politicians).data, HTTPStatus.OK
+        return politician_pagination_schema.dump(paginated_politicians).data, HTTPStatus.OK
 
     @jwt_required
     def post(self):

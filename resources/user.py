@@ -15,13 +15,14 @@ from webargs.flaskparser import use_kwargs
 from models.politician import Politician
 from models.user import User
 
-from schemas.politician import PoliticianSchema
+from schemas.politician import PoliticianSchema, PoliticianPaginationSchema
 from schemas.user import UserSchema
 
 
 user_schema = UserSchema()
 user_public_schema = UserSchema(exclude=('email', ))
 politician_list_schema = PoliticianSchema(many=True)
+politician_pagination_schema = PoliticianPaginationSchema()
 user_avatar_schema = UserSchema(only=('avatar_url', ))
 
 mailgun = MailGunApi(domain=os.environ.get('MAILGUN_DOMAIN'),
@@ -98,12 +99,17 @@ class MeResource(Resource):
 
 class UserPoliticianListResource(Resource):
     @jwt_optional
-    @use_kwargs({'visibility': fields.Str(missing='public')})
-    def get(self, username, visibility):
+    @use_kwargs({'page': fields.Int(missing=1),
+                'per_page': fields.Int(missing=10),
+                'visibility': fields.Str(missing='public')})
+
+    def get(self, username, page, per_page, visibility):
+
         user = User.get_by_username(username=username)
 
         if user is None:
-            return {'message': 'User not found'}
+            return {'message': 'User not found'}, HTTPStatus.NOT_FOUND
+
         current_user = get_jwt_identity()
 
         if current_user == user.id and visibility in ['all', 'private']:
@@ -111,9 +117,10 @@ class UserPoliticianListResource(Resource):
         else:
             visibility = 'public'
 
-        politicians = Politician.get_all_by_user(user_id=user.id, visibility=visibility)
+        paginated_politicians = Politician.get_all_by_user(user_id=user.id, page=page,
+                                                           per_page=per_page, visibility=visibility)
 
-        return politician_list_schema.dump(politicians).data, HTTPStatus.OK
+        return politician_pagination_schema.dump(paginated_politicians).data, HTTPStatus.OK
 
 class UserAvatarUploadResource(Resource):
 

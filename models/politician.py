@@ -33,13 +33,17 @@ class Politician(db.Model):
         return cls.query.filter_by(id=politician_id).first()
 
     @classmethod
-    def get_all_by_user(cls, user_id, visibility='public'):
+    def get_all_by_user(cls, user_id, page, per_page,
+                        visibility='public'):
+
+        query = cls.query.filter_by(user_id=user_id)
+
         if visibility == 'public':
-            return cls.query.filter_by(user_id=user_id, is_publish=True).all()
+            query = cls.query.filter_by(user_id=user_id, is_publish=True)
         elif visibility == 'private':
-            return cls.query.filter_by(user_id=user_id, is_publish=False).all()
-        else:
-            return cls.query.filter_by(user_id=user_id).all()
+            query = cls.query.filter_by(user_id=user_id, is_publish=False)
+
+        return query.order_by(desc(cls.created_at)).paginate(page=page, per_page=per_page)
 
     @classmethod
     def get_all_published(cls, page, per_page):

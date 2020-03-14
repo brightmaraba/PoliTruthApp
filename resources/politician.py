@@ -1,6 +1,6 @@
 import os
-from extensions import image_set
-from utils import save_image
+from extensions import image_set, cache
+from utils import save_image, clear_cache
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
@@ -18,12 +18,23 @@ politician_pagination_schema = PoliticianPaginationSchema()
 
 
 class PoliticianListResource(Resource):
-    @use_kwargs({'page': fields.Int(missing=1),
-                    'per_page': fields.Int(missing=20)})
+    @use_kwargs({'q': fields.Str(missing=''),
+                    'page': fields.Int(missing=1),
+                    'per_page': fields.Int(missing=20),
+                    'sort': fields.Str(missing='created_at'),
+                    'order': fields.Str(missing='desc')
+                    })
+    @cache.cached(timeout=60, query_string=True)
+    def get(self, q, page, per_page, sort, order):
+        print('Querying database...')
 
-    def get(self, page, per_page):
+        if sort not in['created_at', 'county', 'constituency']:
+            sort = 'created_at'
 
-        paginated_politicians = Politician.get_all_published(page, per_page)
+        if order not in ['asc', 'desc']:
+            order = 'desc'
+
+        paginated_politicians = Politician.get_all_published(q, page, per_page, sort, order)
 
         return politician_pagination_schema.dump(paginated_politicians).data, HTTPStatus.OK
 
@@ -95,6 +106,8 @@ class PoliticianResource(Resource):
 
         politician.save()
 
+        clear_cache('/politicians')
+
         return politician_schema.dump(politician).data, HTTPStatus.OK
 
     @jwt_required
@@ -111,6 +124,8 @@ class PoliticianResource(Resource):
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
         politician.delete()
+
+        clear_cache('/politicians')
 
         return {}, HTTPStatus.NO_CONTENT
 
@@ -133,6 +148,8 @@ class PoliticianPublishResource(Resource):
         politician.is_publish = True
         politician.save()
 
+        clear_cache('/politicians')
+
         return {}, HTTPStatus.NO_CONTENT
 
     @jwt_required
@@ -150,6 +167,8 @@ class PoliticianPublishResource(Resource):
 
         politician.is_publish = False
         politician.save()
+
+        clear_cache('/politicians')
 
         return {}, HTTPStatus.NO_CONTENT
 
@@ -185,5 +204,7 @@ class PoliticianCoverUploadResource(Resource):
 
         politician.cover_image = filename
         politician.save()
+
+        clear_cache('/politicians')
 
         return politician_cover_schema.dump(politician).data, HTTPStatus.OK

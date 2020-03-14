@@ -4,6 +4,8 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required
 from http import HTTPStatus
 
+from utils import generate_token, verify_token, save_image, clear_cache
+
 from mailgun import MailGunApi
 from extensions import image_set
 from utils import generate_token, verify_token, save_image
@@ -146,5 +148,7 @@ class UserAvatarUploadResource(Resource):
 
         user.avatar_image = filename
         user.save()
+
+        clear_cache('/politicians')
 
         return user_avatar_schema.dump(user).data, HTTPStatus.OK

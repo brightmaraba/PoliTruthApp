@@ -15,3 +15,4 @@ werkzeug==0.16.0
 Pillow==6.2.1
 Flask-Caching==1.7.2
 FLask-Limiter==1.0.1
+gunicorn==19.9.0

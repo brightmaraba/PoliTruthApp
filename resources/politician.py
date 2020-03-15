@@ -18,7 +18,7 @@ politician_pagination_schema = PoliticianPaginationSchema()
 
 
 class PoliticianListResource(Resource):
-    decorators = [limiter.limit('2 per minute', methods=['GET'], error_message='Too Many Requests')]
+    decorators = [limiter.limit('10 per minute', methods=['GET'], error_message='Too Many Requests, Retry After 1 minute')]
     @use_kwargs({'q': fields.Str(missing=''),
                     'page': fields.Int(missing=1),
                     'per_page': fields.Int(missing=20),

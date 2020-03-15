@@ -1,6 +1,6 @@
 import os
 class Config:
-    DEBUG = True
+    DEBUG = False
 
     SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://ptadbadmin:5114@localhost:5432/ptadb'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -15,3 +15,5 @@ class Config:
 
     CACHE_TYPE = 'simple'
     CACHE_DEFAULT_TIMEOUT = 10 * 60
+
+    RATE_LIMIT_HEADERS_ENABLED = True

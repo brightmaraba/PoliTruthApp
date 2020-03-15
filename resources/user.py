@@ -7,7 +7,7 @@ from http import HTTPStatus
 from utils import generate_token, verify_token, save_image, clear_cache
 
 from mailgun import MailGunApi
-from extensions import image_set
+from extensions import image_set, limiter
 from utils import generate_token, verify_token, save_image
 
 
@@ -100,6 +100,8 @@ class MeResource(Resource):
         return user_schema.dump(user).data, HTTPStatus.OK
 
 class UserPoliticianListResource(Resource):
+    decorators = [limiter.limit('3/minute;30/hour;300/day',
+                    methods=['GET'], error_message='Too Many Requests')]
     @jwt_optional
     @use_kwargs({'page': fields.Int(missing=1),
                 'per_page': fields.Int(missing=10),

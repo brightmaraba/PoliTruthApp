@@ -1,5 +1,5 @@
 import os
-from extensions import image_set, cache
+from extensions import image_set, cache, limiter
 from utils import save_image, clear_cache
 from flask import request
 from flask_restful import Resource
@@ -18,6 +18,7 @@ politician_pagination_schema = PoliticianPaginationSchema()
 
 
 class PoliticianListResource(Resource):
+    decorators = [limiter.limit('2 per minute', methods=['GET'], error_message='Too Many Requests')]
     @use_kwargs({'q': fields.Str(missing=''),
                     'page': fields.Int(missing=1),
                     'per_page': fields.Int(missing=20),
